@@ -8,10 +8,13 @@ import java.util.Map;
 import util.BooleanGenerator;
 import util.RandomBooleanGenerator;
 
+import static domain.Direction.LEFT;
+import static domain.Direction.RIGHT;
+
 public class Ladder {
 
     private static final BooleanGenerator booleanGenerator = new RandomBooleanGenerator();
-    private List<Line> lines;
+    private final List<Line> lines;
 
     public Ladder(int height, int width) {
         this.lines = makeLines(height, width);
@@ -34,5 +37,22 @@ public class Ladder {
         }
 
         return drawing;
+    }
+
+    public int result(int indexOfName) {
+        Map<Direction, Integer> currentPosition = Map.of(LEFT, indexOfName - 1, RIGHT, indexOfName);
+        int currentHeight = 0;
+
+        while (currentHeight < lines.size()) {
+            currentPosition = decideMove(currentPosition, currentHeight);
+            currentHeight++;
+        }
+
+        return currentPosition.get(RIGHT);
+    }
+
+    private Map<Direction, Integer> decideMove(Map<Direction, Integer> position, int height) {
+        Line currentLine = lines.get(height);
+        return currentLine.move(position);
     }
 }
